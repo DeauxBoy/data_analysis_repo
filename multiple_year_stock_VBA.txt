@@ -1,0 +1,115 @@
+Sub alphabetical_testing()
+
+' set an initial variable for holding the ticker symbol
+  Dim ticker_sym As String
+
+ ' set an initial variable for holding the total stock volune
+  Dim total_volume As Double
+  total_volume = 0
+
+ ' dim the fist ticker closing price
+  'Dim first_ticker_close As Integer
+  
+ ' dim the last ticker closing price
+  'Dim last_ticker_close As Integer
+
+ ' dim the yearly chage
+  'Dim yearly_change As Integer
+
+ ' set the loop counter
+ Dim loop_count As Integer
+ loop_count = 0
+
+ ' keep track of the location for each ticker symbol in the summary table
+  Dim Summary_Table_Row As Integer
+  Summary_Table_Row = 2
+
+ ' hard code summary table headers
+  Cells(1, 9).Value = "Ticker"
+  Cells(1, 10).Value = "Yearly Change"
+  Cells(1, 11).Value = "Percent Change"
+  Cells(1, 12).Value = "Total Stock Volume"
+
+  ' counts the number of rows
+  last_row = Cells(Rows.Count, 1).End(xlUp).Row
+
+  ' loop through all the rows up to the last one
+  For i = 2 To last_row
+
+    ' if the cell immediatly after is different then...
+    If Cells(i + 1, 1).Value <> Cells(i, 1).Value Then
+
+      ' set the variable ticker symbol
+      ticker_sym = Cells(i, 1).Value
+
+      ' add to the total volume
+      total_volume = total_volume + Cells(i, 7).Value
+
+      ' set last closing price into variable
+      last_ticker_close = Cells(i, 6).Value
+
+      ' set the first closing price into variable
+      first_ticker_close = Cells(i - loop_count, 6).Value
+
+      ' equation to get the Yearly Chage
+      yearly_change = last_ticker_close - first_ticker_close
+      
+      ' equation to get the percentage change
+      percent_change = (last_ticker_close - first_ticker_close) / first_ticker_close
+
+      ' print the ticker symbol in the summary table
+      Range("I" & Summary_Table_Row).Value = ticker_sym
+
+      ' print the yearly change in the summary table
+      Range("J" & Summary_Table_Row).Value = yearly_change
+      
+      ' print the percentage change in the summary table
+      Range("K" & Summary_Table_Row).Value = percent_change
+
+      ' print the yearly change in the summary table
+      Range("L" & Summary_Table_Row).Value = total_volume
+      
+      ' format percent cell from decimal to percent
+      Range("K" & Summary_Table_Row).Value = Format(percent_change, "#.##%;-#.##%")
+      
+      ' if cells are negative change cell color to red
+        If Range("J" & Summary_Table_Row).Value < 0 Then
+
+          Range("J" & Summary_Table_Row).Interior.ColorIndex = 3
+        
+      ' if cells aren't negative then highlight them in green
+        Else
+
+          Range("J" & Summary_Table_Row).Interior.ColorIndex = 4
+
+        End If
+
+      ' add one to the summary table row
+      Summary_Table_Row = Summary_Table_Row + 1
+      
+      ' reset the ticker volume
+      total_volume = 0
+
+      ' reset the loop counter
+      loop_count = 0
+
+
+    ' If the cell immediately following a row is the same ticker symbol...
+    Else
+
+      ' add whats accumulated to the ticker's total volume
+      total_volume = total_volume + Cells(i, 7).Value
+
+      ' loop counter counting how many rows per ticker symbol
+      loop_count = loop_count + 1
+
+      
+    End If
+
+  Next i
+
+    
+
+End Sub
+
+
